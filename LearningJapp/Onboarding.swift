@@ -1,8 +1,8 @@
 import SwiftUI
 
-// MARK: - Duration model
+// MARK: - Goal model (what onboarding produces)
 
-enum LearningDuration: String, CaseIterable, Identifiable {
+enum LearningDuration: String, CaseIterable, Identifiable, Codable {
     case week = "Week"
     case month = "Month"
     case year = "Year"
@@ -10,11 +10,15 @@ enum LearningDuration: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
+struct LearningGoal: Codable, Equatable {
+    var topic: String
+    var duration: LearningDuration
+}
+
 // MARK: - Colors
 
 extension Color {
-    // #FF9230
-    static let appOrange = Color(red: 255 / 255, green: 146 / 255, blue: 48 / 255)
+    static let appOrange = Color(red: 255 / 255, green: 146 / 255, blue: 48 / 255) // #FF9230
 }
 
 // MARK: - Onboarding
@@ -24,12 +28,20 @@ struct OnboardingView: View {
     @State private var duration: LearningDuration = .week
     @FocusState private var isTopicFocused: Bool
 
-    var onStart: (String, LearningDuration) -> Void = { _, _ in }
+    /// Called when the user taps "Start Learning" with a valid goal
+    var onStart: (LearningGoal) -> Void = { _ in }
+
+    private var cleanedTopic: String {
+        topic.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    /// Start button is disabled until the user types what they want to learn
+    private var canStart: Bool { !cleanedTopic.isEmpty }
 
     var body: some View {
         ZStack {
-            // Tap on the background dismisses the keyboard.
-            // It must NOT be on the root view, or it swallows the button taps.
+            // Tap on the background dismisses the keyboard
+            // (kept off the root view so it never blocks the buttons)
             Color.black
                 .ignoresSafeArea()
                 .onTapGesture { isTopicFocused = false }
@@ -73,16 +85,23 @@ struct OnboardingView: View {
                     .foregroundStyle(.white)
                     .tint(Color.appOrange)
                     .focused($isTopicFocused)
+                    .keyboardType(.default)
+                    .textInputAutocapitalization(.words)
                     .submitLabel(.done)
+                    .autocorrectionDisabled()
                     .onSubmit { isTopicFocused = false }
 
                     Rectangle()
-                        .fill(Color.white.opacity(0.15))
+                        .fill(isTopicFocused ? Color.appOrange : Color.white.opacity(0.15))
                         .frame(height: 1)
+                        .animation(.easeInOut(duration: 0.2), value: isTopicFocused)
                 }
                 .padding(.top, 36)
+                // Tapping anywhere on the label / field / underline opens the keyboard
+                .contentShape(Rectangle())
+                .onTapGesture { isTopicFocused = true }
 
-                // Duration chips (liquid glass)
+                // Duration chips
                 VStack(alignment: .leading, spacing: 16) {
                     Text("I want to learn it in a")
                         .font(.system(size: 18))
@@ -95,7 +114,7 @@ struct OnboardingView: View {
                                 isSelected: duration == option
                             ) {
                                 isTopicFocused = false
-                                withAnimation(.smooth(duration: 0.25)) {
+                                withAnimation(.bouncy(duration: 0.4, extraBounce: 0.15)) {
                                     duration = option
                                 }
                             }
@@ -106,11 +125,11 @@ struct OnboardingView: View {
 
                 Spacer()
 
-                // Start button (liquid glass)
+                // Start button
                 VStack(spacing: 12) {
                     Button {
                         isTopicFocused = false
-                        onStart(topic, duration)
+                        onStart(LearningGoal(topic: cleanedTopic, duration: duration))
                     } label: {
                         Text("Start Learning")
                             .font(.system(size: 20, weight: .medium))
@@ -122,6 +141,7 @@ struct OnboardingView: View {
                     .controlSize(.large)
                     .tint(Color.appOrange)
                     .foregroundStyle(.white)
+                    .disabled(!canStart)
 
                     Text("You can edit your desire later")
                         .font(.system(size: 14))
@@ -137,80 +157,52 @@ struct OnboardingView: View {
     }
 }
 
+// MARK: - Duration chip
+
 struct DurationChip: View {
     let title: String
     let isSelected: Bool
     let action: () -> Void
 
     var body: some View {
+        // One single button (same view identity for selected and unselected),
+        // only the tint and text color change.
         Button(action: action) {
             Text(title)
-                .font(.system(size: 18, weight: .medium))
-                .foregroundStyle(isSelected ? .white : Color(hex: "999999"))
-                .padding(.horizontal, 24)
-                .padding(.vertical, 14)
-                .background(
-                    ZStack {
-                        if isSelected {
-                            // Selected Orange Glass Fill
-                            Capsule()
-                                .fill(
-                                    LinearGradient(
-                                        colors: [
-                                            Color(red: 255/255, green: 160/255, blue: 60/255),
-                                            Color(red: 255/255, green: 130/255, blue: 0/255)
-                                        ],
-                                        startPoint: .top,
-                                        endPoint: .bottom
-                                    )
-                                )
-                            
-                            // Top Glass Highlight Rim
-                            Capsule()
-                                .stroke(
-                                    LinearGradient(
-                                        colors: [.white.opacity(0.6), .white.opacity(0.1)],
-                                        startPoint: .top,
-                                        endPoint: .bottom
-                                    ),
-                                    lineWidth: 1
-                                )
-                        } else {
-                            // Unselected Glass Fill
-                            Capsule()
-                                .fill(Color(hex: "111111").opacity(0.85))
-                            
-                            // Thin Glass Border
-                            Capsule()
-                                .stroke(Color(hex: "262626"), lineWidth: 1)
-                        }
-                    }
-                )
-                .shadow(
-                    color: isSelected ? Color.appOrange.opacity(0.35) : .clear,
-                    radius: 10,
-                    x: 0,
-                    y: 4
-                )
+                .font(.system(size: 20, weight: .medium))
+                .lineLimit(1)
+                .fixedSize()
+                .padding(.horizontal, 12)
+                .padding(.vertical, 4)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.glassProminent)
+        .buttonBorderShape(.capsule)
+        .controlSize(.large)
+        .tint(isSelected ? Color.appOrange : Color(white: 0.16))
+        .foregroundStyle(isSelected ? Color.white : Color.white.opacity(0.45))
+        .animation(.easeInOut(duration: 0.2), value: isSelected)
     }
 }
 
-// Helper extension for Hex colors from your Sketch inspector
-extension Color {
-    init(hex: String) {
-        let scanner = Scanner(string: hex)
-        var rgbValue: UInt64 = 0
-        scanner.scanHexInt64(&rgbValue)
-        
-        let r = Double((rgbValue & 0xFF0000) >> 16) / 255.0
-        let g = Double((rgbValue & 0x00FF00) >> 8) / 255.0
-        let b = Double(rgbValue & 0x0000FF) / 255.0
-        
-        self.init(red: r, green: g, blue: b)
+#Preview {
+    OnboardingView { goal in
+        print("Start:", goal)
     }
 }
-#Preview {
-    OnboardingView()
+
+struct TapTest: View {
+    @State private var count = 0
+    @State private var text = ""
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Button("Tapped \(count)") { count += 1 }
+                .buttonStyle(.glass)
+            TextField("Type here", text: $text)
+                .textFieldStyle(.roundedBorder)
+                .padding()
+        }
+    }
 }
+
+#Preview { TapTest() }
