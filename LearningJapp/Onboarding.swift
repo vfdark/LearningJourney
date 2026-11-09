@@ -13,8 +13,8 @@ enum LearningDuration: String, CaseIterable, Identifiable {
 // MARK: - Colors
 
 extension Color {
-    // #F09748 ("2 Orange" from the design)
-    static let appOrange = Color(red: 240 / 255, green: 151 / 255, blue: 72 / 255)
+    // #FF9230
+    static let appOrange = Color(red: 255 / 255, green: 146 / 255, blue: 48 / 255)
 }
 
 // MARK: - Onboarding
@@ -28,7 +28,11 @@ struct OnboardingView: View {
 
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            // Tap on the background dismisses the keyboard.
+            // It must NOT be on the root view, or it swallows the button taps.
+            Color.black
+                .ignoresSafeArea()
+                .onTapGesture { isTopicFocused = false }
 
             VStack(alignment: .leading, spacing: 0) {
 
@@ -70,6 +74,7 @@ struct OnboardingView: View {
                     .tint(Color.appOrange)
                     .focused($isTopicFocused)
                     .submitLabel(.done)
+                    .onSubmit { isTopicFocused = false }
 
                     Rectangle()
                         .fill(Color.white.opacity(0.15))
@@ -83,16 +88,15 @@ struct OnboardingView: View {
                         .font(.system(size: 18))
                         .foregroundStyle(.white)
 
-                    GlassEffectContainer(spacing: 12) {
-                        HStack(spacing: 12) {
-                            ForEach(LearningDuration.allCases) { option in
-                                DurationChip(
-                                    title: option.rawValue,
-                                    isSelected: duration == option
-                                ) {
-                                    withAnimation(.smooth(duration: 0.25)) {
-                                        duration = option
-                                    }
+                    HStack(spacing: 12) {
+                        ForEach(LearningDuration.allCases) { option in
+                            DurationChip(
+                                title: option.rawValue,
+                                isSelected: duration == option
+                            ) {
+                                isTopicFocused = false
+                                withAnimation(.smooth(duration: 0.25)) {
+                                    duration = option
                                 }
                             }
                         }
@@ -105,16 +109,19 @@ struct OnboardingView: View {
                 // Start button (liquid glass)
                 VStack(spacing: 12) {
                     Button {
+                        isTopicFocused = false
                         onStart(topic, duration)
                     } label: {
                         Text("Start Learning")
                             .font(.system(size: 20, weight: .medium))
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 30)
-                            .padding(.vertical, 14)
-                            .glassEffect(.regular.tint(Color.appOrange).interactive(), in: .capsule)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 6)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.glassProminent)
+                    .buttonBorderShape(.capsule)
+                    .controlSize(.large)
+                    .tint(Color.appOrange)
+                    .foregroundStyle(.white)
 
                     Text("You can edit your desire later")
                         .font(.system(size: 14))
@@ -126,11 +133,9 @@ struct OnboardingView: View {
             .padding(.horizontal, 24)
         }
         .preferredColorScheme(.dark)
-        .onTapGesture { isTopicFocused = false }
+        .sensoryFeedback(.selection, trigger: duration)
     }
 }
-
-// MARK: - Chip
 
 struct DurationChip: View {
     let title: String
@@ -140,21 +145,72 @@ struct DurationChip: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.system(size: 20, weight: .medium))
-                .foregroundStyle(isSelected ? Color.white : Color.white.opacity(0.35))
-                .padding(.horizontal, 28)
-                .padding(.vertical, 12)
-                .glassEffect(
-                    isSelected
-                        ? .regular.tint(Color.appOrange).interactive()
-                        : .regular.interactive(),
-                    in: .capsule
+                .font(.system(size: 18, weight: .medium))
+                .foregroundStyle(isSelected ? .white : Color(hex: "999999"))
+                .padding(.horizontal, 24)
+                .padding(.vertical, 14)
+                .background(
+                    ZStack {
+                        if isSelected {
+                            // Selected Orange Glass Fill
+                            Capsule()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [
+                                            Color(red: 255/255, green: 160/255, blue: 60/255),
+                                            Color(red: 255/255, green: 130/255, blue: 0/255)
+                                        ],
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    )
+                                )
+                            
+                            // Top Glass Highlight Rim
+                            Capsule()
+                                .stroke(
+                                    LinearGradient(
+                                        colors: [.white.opacity(0.6), .white.opacity(0.1)],
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    ),
+                                    lineWidth: 1
+                                )
+                        } else {
+                            // Unselected Glass Fill
+                            Capsule()
+                                .fill(Color(hex: "111111").opacity(0.85))
+                            
+                            // Thin Glass Border
+                            Capsule()
+                                .stroke(Color(hex: "262626"), lineWidth: 1)
+                        }
+                    }
+                )
+                .shadow(
+                    color: isSelected ? Color.appOrange.opacity(0.35) : .clear,
+                    radius: 10,
+                    x: 0,
+                    y: 4
                 )
         }
         .buttonStyle(.plain)
     }
 }
 
+// Helper extension for Hex colors from your Sketch inspector
+extension Color {
+    init(hex: String) {
+        let scanner = Scanner(string: hex)
+        var rgbValue: UInt64 = 0
+        scanner.scanHexInt64(&rgbValue)
+        
+        let r = Double((rgbValue & 0xFF0000) >> 16) / 255.0
+        let g = Double((rgbValue & 0x00FF00) >> 8) / 255.0
+        let b = Double(rgbValue & 0x0000FF) / 255.0
+        
+        self.init(red: r, green: g, blue: b)
+    }
+}
 #Preview {
     OnboardingView()
 }
