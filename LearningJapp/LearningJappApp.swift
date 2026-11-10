@@ -1,10 +1,12 @@
 import SwiftUI
+import SwiftData
 
 @main
 struct LearningJappApp: App {
     var body: some Scene {
         WindowGroup {
-            ActivityView()
+            RootView()
         }
+        .modelContainer(for: [Goal.self, DayEntry.self])
     }
 }
