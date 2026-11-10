@@ -8,6 +8,24 @@ enum LearningDuration: String, CaseIterable, Identifiable, Codable {
     case year = "Year"
 
     var id: String { rawValue }
+
+    /// Freezes allowed: 2 per week, 8 per month, 96 per year
+    var freezeLimit: Int {
+        switch self {
+        case .week: 2
+        case .month: 8
+        case .year: 96
+        }
+    }
+
+    /// How many days the goal lasts
+    var targetDays: Int {
+        switch self {
+        case .week: 7
+        case .month: 30
+        case .year: 365
+        }
+    }
 }
 
 struct LearningGoal: Codable, Equatable {
@@ -154,6 +172,14 @@ struct OnboardingView: View {
         }
         .preferredColorScheme(.dark)
         .sensoryFeedback(.selection, trigger: duration)
+        // "Done" button above the iOS keyboard
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done") { isTopicFocused = false }
+                    .tint(Color.appOrange)
+            }
+        }
     }
 }
 
@@ -189,20 +215,3 @@ struct DurationChip: View {
         print("Start:", goal)
     }
 }
-
-struct TapTest: View {
-    @State private var count = 0
-    @State private var text = ""
-
-    var body: some View {
-        VStack(spacing: 20) {
-            Button("Tapped \(count)") { count += 1 }
-                .buttonStyle(.glass)
-            TextField("Type here", text: $text)
-                .textFieldStyle(.roundedBorder)
-                .padding()
-        }
-    }
-}
-
-#Preview { TapTest() }
