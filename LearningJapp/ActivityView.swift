@@ -1,4 +1,6 @@
 import SwiftUI
+import Combine
+import Foundation
 
 // The view only DISPLAYS what the ViewModel gives it and forwards taps.
 // No models, no database, no rules in here.
@@ -6,6 +8,10 @@ import SwiftUI
 struct ActivityView: View {
 
     @State private var viewModel: ActivityViewModel
+    @Environment(\.scenePhase) private var scenePhase
+
+    /// Checks the time every 30 seconds (32 hour rule and 12 AM)
+    private let ticker = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
 
     init(viewModel: ActivityViewModel) {
         _viewModel = State(initialValue: viewModel)
@@ -22,22 +28,35 @@ struct ActivityView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     header
                     weekStrip.padding(.top, 14)
+                    statCards.padding(.top, 14)
 
                     Spacer()
                     logButton(size: circleSize)
                         .frame(maxWidth: .infinity)
                     Spacer()
 
-                    Text("\(viewModel.freezesUsed) out of \(viewModel.freezeLimit) Freezes used")
-                        .font(.system(size: 13))
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.bottom, 16)
+                    VStack(spacing: 14) {
+                        freezeButton(width: circleSize)
+
+                        Text(viewModel.freezeCaption)
+                            .font(.system(size: 13))
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.bottom, 16)
                 }
                 .padding(.horizontal, 20)
             }
         }
         .sensoryFeedback(.success, trigger: viewModel.todayStatus)
+        // Keep the time-based rules fresh
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { viewModel.refresh() }
+        }
+        .onReceive(ticker) { _ in viewModel.refresh() }
+        .onReceive(NotificationCenter.default.publisher(for: .NSCalendarDayChanged)) { _ in
+            viewModel.refresh()   // 12 AM: the buttons come back
+        }
     }
 
     // MARK: - Header
@@ -55,6 +74,7 @@ struct ActivityView: View {
 
             Spacer()
 
+            // These two open other screens (calendar, edit goal). Built next.
             HStack(spacing: 10) {
                 circleButton(icon: "calendar")
                 circleButton(icon: "pencil.and.outline")
@@ -64,7 +84,7 @@ struct ActivityView: View {
 
     private func circleButton(icon: String) -> some View {
         Button {
-            // nothing yet: these open other screens later
+            // opens another screen later
         } label: {
             Image(systemName: icon)
                 .font(.system(size: 18))
@@ -113,6 +133,35 @@ struct ActivityView: View {
             .background(Circle().fill(fill))
     }
 
+    // MARK: - Stat cards
+
+    private var statCards: some View {
+        HStack(spacing: 12) {
+            statCard(icon: "flame.fill", tint: .stepOrange,
+                     value: viewModel.learnedText, label: "Learned")
+            statCard(icon: "snowflake", tint: .stepBlue,
+                     value: viewModel.freezedText, label: "Freezed")
+        }
+    }
+
+    private func statCard(icon: String, tint: Color, value: String, label: String) -> some View {
+        VStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.system(size: 20))
+                .foregroundStyle(tint)
+
+            Text(value)
+                .font(.system(size: 20, weight: .bold))
+
+            Text(label)
+                .font(.system(size: 12))
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 18)
+        .glassEffect(.regular, in: .rect(cornerRadius: 28))
+    }
+
     // MARK: - Big Log button
 
     @ViewBuilder
@@ -137,6 +186,36 @@ struct ActivityView: View {
             }
             .buttonStyle(.glass)
             .buttonBorderShape(.circle)
+            .foregroundStyle(Color.primary.opacity(0.3))
+            .disabled(true)
+        }
+    }
+
+    // MARK: - Freeze button
+
+    @ViewBuilder
+    private func freezeButton(width: CGFloat) -> some View {
+        if viewModel.canFreeze {
+            Button {
+                viewModel.freeze()
+            } label: {
+                Text("Freeze for a day")
+                    .font(.system(size: 18, weight: .medium))
+                    .frame(width: width, height: 30)
+            }
+            .buttonStyle(.glassProminent)
+            .buttonBorderShape(.capsule)
+            .tint(Color.stepBlue)
+            .foregroundStyle(.white)
+        } else {
+            // Disabled: all freezes used, or today is already logged
+            Button {} label: {
+                Text("Freezed for a day")
+                    .font(.system(size: 18, weight: .medium))
+                    .frame(width: width, height: 30)
+            }
+            .buttonStyle(.glass)
+            .buttonBorderShape(.capsule)
             .foregroundStyle(Color.primary.opacity(0.3))
             .disabled(true)
         }
