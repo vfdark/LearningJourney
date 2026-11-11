@@ -17,6 +17,13 @@ final class ActivityViewModel {
         let isToday: Bool
     }
 
+    /// TASK 3: where the goal stands
+    enum GoalOutcome {
+        case inProgress   // keep logging
+        case completed    // "Well done!"
+        case notMet       // "You didn't reach your goal this time."
+    }
+
     private let goal: Goal
     private let context: ModelContext
     private let calendar = AppCalendar.calendar
@@ -89,16 +96,51 @@ final class ActivityViewModel {
         n == 1 ? "1 Day" : "\(n) days"
     }
 
+    // MARK: - TASK 3: goal completed or not met
+
+    /// Days needed to complete the goal: 7 for a week, 30 for a month, 365 for a year
+    private var targetDays: Int { goal.duration.targetDays }
+
+    /// Every logged day counts (learned or freezed)
+    private var loggedDays: Int { goal.days.count }
+
+    /// Key of the last day of the goal: start day + (targetDays - 1) days
+    private var lastDayKey: String {
+        let start = calendar.startOfDay(for: goal.startDate)
+        let end = calendar.date(byAdding: .day, value: targetDays - 1, to: start) ?? start
+        return AppCalendar.key(for: end)
+    }
+
+    var outcome: GoalOutcome {
+        if loggedDays >= targetDays { return .completed }      // reached the goal
+        if todayKey > lastDayKey { return .notMet }            // time is over, goal not reached
+        return .inProgress
+    }
+
+    var resultIcon: String {
+        outcome == .completed ? "hands.clap.fill" : "xmark.seal"
+    }
+
+    var resultTitle: String {
+        outcome == .completed ? "Well done!" : "You didn't reach your goal this time."
+    }
+
+    var resultSubtitle: String {
+        outcome == .completed ? "Ready for your next goal?" : "Want to set another goal?"
+    }
+
     // MARK: - Button states
+
+    var todayKey: String { AppCalendar.key(for: now) }
 
     var todayStatus: DayStatus? { status(on: now) }
 
     /// Disabled once today is logged as learned. Enabled again at 12 AM,
     /// because a new day has a new key and nothing is saved under it yet.
-    var canLog: Bool { todayStatus != .learned }
+    var canLog: Bool { outcome == .inProgress && todayStatus != .learned }
 
     /// Disabled if all freezes are used OR today is already logged.
-    var canFreeze: Bool { todayStatus == nil && freezesUsed < freezeLimit }
+    var canFreeze: Bool { outcome == .inProgress && todayStatus == nil && freezesUsed < freezeLimit }
 
     // MARK: - Time
 
@@ -130,6 +172,22 @@ final class ActivityViewModel {
         refresh()
         guard canFreeze else { return }
         setToday(.freezed)   // a freeze keeps the streak alive
+    }
+
+    /// TASK 3: "Set a goal". Saves a brand new goal. The old goal stays in the database,
+    /// and the app shows the newest goal, so the user lands on a fresh Activity screen.
+    func startNewGoal(topic: String, duration: LearningDuration) {
+        let cleaned = topic.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleaned.isEmpty else { return }
+
+        let newGoal = Goal(
+            topic: cleaned,
+            duration: duration,
+            startDate: now,
+            streakStartKey: AppCalendar.key(for: now)
+        )
+        context.insert(newGoal)
+        save()
     }
 
     // MARK: - Private

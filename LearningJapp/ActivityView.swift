@@ -8,9 +8,10 @@ import Foundation
 struct ActivityView: View {
 
     @State private var viewModel: ActivityViewModel
+    @State private var showGoalSheet = false
     @Environment(\.scenePhase) private var scenePhase
 
-    /// Checks the time every 30 seconds (32 hour rule and 12 AM)
+    /// Checks the time every 30 seconds (32 hour rule, 12 AM, end of the goal)
     private let ticker = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
 
     init(viewModel: ActivityViewModel) {
@@ -30,25 +31,40 @@ struct ActivityView: View {
                     weekStrip.padding(.top, 14)
                     statCards.padding(.top, 14)
 
-                    Spacer()
-                    logButton(size: circleSize)
+                    if viewModel.outcome == .inProgress {
+                        // Task 2: keep logging
+                        Spacer()
+                        logButton(size: circleSize)
+                            .frame(maxWidth: .infinity)
+                        Spacer()
+
+                        VStack(spacing: 14) {
+                            freezeButton(width: circleSize)
+
+                            Text(viewModel.freezeCaption)
+                                .font(.system(size: 13))
+                                .foregroundStyle(.secondary)
+                        }
                         .frame(maxWidth: .infinity)
-                    Spacer()
-
-                    VStack(spacing: 14) {
-                        freezeButton(width: circleSize)
-
-                        Text(viewModel.freezeCaption)
-                            .font(.system(size: 13))
-                            .foregroundStyle(.secondary)
+                        .padding(.bottom, 16)
+                    } else {
+                        // Task 3: goal completed or not met
+                        Spacer()
+                        resultSection
+                        Spacer()
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.bottom, 16)
                 }
                 .padding(.horizontal, 20)
             }
         }
         .sensoryFeedback(.success, trigger: viewModel.todayStatus)
+        .sensoryFeedback(.success, trigger: viewModel.outcome)
+        // Task 3: "Set a goal" opens the New Learning goal screen
+        .sheet(isPresented: $showGoalSheet) {
+            GoalEditorView { topic, duration in
+                viewModel.startNewGoal(topic: topic, duration: duration)
+            }
+        }
         // Keep the time-based rules fresh
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { viewModel.refresh() }
@@ -220,6 +236,41 @@ struct ActivityView: View {
             .disabled(true)
         }
     }
+
+    // MARK: - Task 3: result (goal completed / not met)
+
+    private var resultSection: some View {
+        VStack(spacing: 8) {
+            Image(systemName: viewModel.resultIcon)
+                .font(.system(size: 44))
+                .foregroundStyle(Color.stepOrange)
+
+            Text(viewModel.resultTitle)
+                .font(.system(size: 17, weight: .bold))
+                .padding(.top, 8)
+
+            Text(viewModel.resultSubtitle)
+                .font(.system(size: 14))
+                .foregroundStyle(.secondary)
+
+            Button {
+                showGoalSheet = true
+            } label: {
+                Label("Set a goal", systemImage: "pencil.and.outline")
+                    .font(.system(size: 17, weight: .medium))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+            }
+            .buttonStyle(.glassProminent)
+            .buttonBorderShape(.capsule)
+            .controlSize(.large)
+            .tint(Color.stepOrange)
+            .foregroundStyle(.white)
+            .padding(.top, 32)
+        }
+        .multilineTextAlignment(.center)
+        .frame(maxWidth: .infinity)
+    }
 }
 
 // MARK: - Colors (light: system white, dark: #111111)
@@ -235,7 +286,36 @@ private extension Color {
     })
 }
 
-#Preview {
-    ActivityView(viewModel: PreviewData.activityViewModel())
+// One preview for each state in the design
+
+#Preview("Default") {
+    ActivityView(viewModel: PreviewData.activityViewModel(pastLearned: 4))
+        .preferredColorScheme(.dark)
+}
+
+#Preview("Learned today") {
+    ActivityView(viewModel: PreviewData.activityViewModel(today: .learned, pastLearned: 4))
+        .preferredColorScheme(.dark)
+}
+
+#Preview("Freezed today") {
+    ActivityView(viewModel: PreviewData.activityViewModel(today: .freezed, pastLearned: 4))
+        .preferredColorScheme(.dark)
+}
+
+#Preview("No freezes available") {
+    ActivityView(viewModel: PreviewData.activityViewModel(today: .freezed, pastLearned: 3, pastFreezed: 1))
+        .preferredColorScheme(.dark)
+}
+
+#Preview("Goal completed") {
+    // 7 logged days in a week goal
+    ActivityView(viewModel: PreviewData.activityViewModel(today: .learned, pastLearned: 4, pastFreezed: 2))
+        .preferredColorScheme(.dark)
+}
+
+#Preview("Goal not met") {
+    // The week is over (started 10 days ago) and only 4 days were logged
+    ActivityView(viewModel: PreviewData.activityViewModel(pastLearned: 2, pastFreezed: 2, startedDaysAgo: 10))
         .preferredColorScheme(.dark)
 }
