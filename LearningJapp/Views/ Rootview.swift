@@ -19,11 +19,11 @@ struct RootView: View {
                 .id(goal.persistentModelID) // a new goal gets a fresh screen
         } else {
             // Task 1, first step: Onboarding
-            OnboardingView { newGoal in
+            OnboardingView { topic, duration in
                 // "Set learning goal and duration": save it
                 let goal = Goal(
-                    topic: newGoal.topic,
-                    duration: newGoal.duration,
+                    topic: topic,
+                    duration: duration,
                     streakStartKey: AppCalendar.key(for: .now)
                 )
                 context.insert(goal)     // add it to the database

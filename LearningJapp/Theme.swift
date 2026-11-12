@@ -9,6 +9,9 @@ extension Color {
             : .systemBackground
     })
 
+    /// Brand orange #FF9230
+    static let appOrange = Color(red: 255 / 255, green: 146 / 255, blue: 48 / 255)
+
     /// Freeze blue (snowflake, freezed days)
     static let appBlue = Color(red: 0.38, green: 0.78, blue: 0.94)
 }
