@@ -5,10 +5,18 @@ import Foundation
 // The view only DISPLAYS what the ViewModel gives it and forwards taps.
 // No models, no database, no rules in here.
 
+/// Which version of the "Learning Goal" screen is open
+private enum GoalSheet: String, Identifiable {
+    case new      // Task 3: the old goal ended, set a new one
+    case update   // Task 4: change the current goal (pencil button)
+
+    var id: String { rawValue }
+}
+
 struct ActivityView: View {
 
     @State private var viewModel: ActivityViewModel
-    @State private var showGoalSheet = false
+    @State private var goalSheet: GoalSheet?
     @Environment(\.scenePhase) private var scenePhase
 
     /// Checks the time every 30 seconds (32 hour rule, 12 AM, end of the goal)
@@ -59,10 +67,23 @@ struct ActivityView: View {
         }
         .sensoryFeedback(.success, trigger: viewModel.todayStatus)
         .sensoryFeedback(.success, trigger: viewModel.outcome)
-        // Task 3: "Set a goal" opens the New Learning goal screen
-        .sheet(isPresented: $showGoalSheet) {
-            GoalEditorView { topic, duration in
-                viewModel.startNewGoal(topic: topic, duration: duration)
+        // The "Learning Goal" screen
+        .sheet(item: $goalSheet) { sheet in
+            switch sheet {
+            case .new:
+                // Task 3: the old goal ended, no alert needed
+                GoalEditorView(requiresConfirmation: false) { topic, duration in
+                    viewModel.startNewGoal(topic: topic, duration: duration)
+                }
+            case .update:
+                // Task 4: change the current goal. Asks first: the streak starts over
+                GoalEditorView(
+                    topic: viewModel.goalTopic,
+                    duration: viewModel.goalDuration,
+                    requiresConfirmation: true
+                ) { topic, duration in
+                    viewModel.updateGoal(topic: topic, duration: duration)
+                }
             }
         }
         // Keep the time-based rules fresh
@@ -90,18 +111,18 @@ struct ActivityView: View {
 
             Spacer()
 
-            // These two open other screens (calendar, edit goal). Built next.
             HStack(spacing: 10) {
-                circleButton(icon: "calendar")
-                circleButton(icon: "pencil.and.outline")
+                // Calendar screen: built next
+                circleButton(icon: "calendar") { }
+
+                // Opens the "Learning Goal" screen
+                circleButton(icon: "pencil.and.outline") { goalSheet = .update }
             }
         }
     }
 
-    private func circleButton(icon: String) -> some View {
-        Button {
-            // opens another screen later
-        } label: {
+    private func circleButton(icon: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
             Image(systemName: icon)
                 .font(.system(size: 18))
                 .frame(width: 26, height: 26)
@@ -254,7 +275,7 @@ struct ActivityView: View {
                 .foregroundStyle(.secondary)
 
             Button {
-                showGoalSheet = true
+                goalSheet = .new
             } label: {
                 Label("Set a goal", systemImage: "pencil.and.outline")
                     .font(.system(size: 17, weight: .medium))

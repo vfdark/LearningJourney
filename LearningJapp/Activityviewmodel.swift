@@ -45,6 +45,10 @@ final class ActivityViewModel {
 
     // MARK: - Header
 
+    /// Current goal, used to fill the "Learning Goal" screen
+    var goalTopic: String { goal.topic }
+    var goalDuration: LearningDuration { goal.duration }
+
     /// Today's real date, e.g. "Tuesday, 10 November"
     var dateText: String {
         let formatter = DateFormatter()
@@ -188,6 +192,12 @@ final class ActivityViewModel {
         )
         context.insert(newGoal)
         save()
+    }
+
+    /// TASK 4: "Update goal". The streak, freezes and progress start over,
+    /// so it is saved as a fresh goal (the old one stays in the database).
+    func updateGoal(topic: String, duration: LearningDuration) {
+        startNewGoal(topic: topic, duration: duration)
     }
 
     // MARK: - Private
