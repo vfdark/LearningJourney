@@ -17,6 +17,7 @@ struct ActivityView: View {
 
     @State private var viewModel: ActivityViewModel
     @State private var goalSheet: GoalSheet?
+    @State private var showCalendar = false
     @Environment(\.scenePhase) private var scenePhase
 
     /// Checks the time every 30 seconds (32 hour rule, 12 AM, end of the goal)
@@ -67,6 +68,10 @@ struct ActivityView: View {
         }
         .sensoryFeedback(.success, trigger: viewModel.todayStatus)
         .sensoryFeedback(.success, trigger: viewModel.outcome)
+        // Task 5: the "Activities" calendar (view only)
+        .fullScreenCover(isPresented: $showCalendar) {
+            CalendarView(viewModel: viewModel.makeCalendarViewModel())
+        }
         // The "Learning Goal" screen
         .sheet(item: $goalSheet) { sheet in
             switch sheet {
@@ -112,8 +117,8 @@ struct ActivityView: View {
             Spacer()
 
             HStack(spacing: 10) {
-                // Calendar screen: built next
-                circleButton(icon: "calendar") { }
+                // Opens the "Activities" calendar
+                circleButton(icon: "calendar") { showCalendar = true }
 
                 // Opens the "Learning Goal" screen
                 circleButton(icon: "pencil.and.outline") { goalSheet = .update }

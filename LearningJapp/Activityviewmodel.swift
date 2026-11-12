@@ -200,6 +200,11 @@ final class ActivityViewModel {
         startNewGoal(topic: topic, duration: duration)
     }
 
+    /// TASK 5: the view model of the "Activities" (calendar) screen
+    func makeCalendarViewModel() -> CalendarViewModel {
+        CalendarViewModel(context: context, now: now)
+    }
+
     // MARK: - Private
 
     private func status(on date: Date) -> DayStatus? {

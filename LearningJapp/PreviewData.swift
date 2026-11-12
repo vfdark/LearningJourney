@@ -45,4 +45,26 @@ enum PreviewData {
 
         return ActivityViewModel(goal: goal, context: context)
     }
+
+    /// A goal that started 70 days ago, with mostly learned days and a few freezes
+    static func calendarViewModel() -> CalendarViewModel {
+        let cal = AppCalendar.calendar
+        let now = Date()
+        let context = container.mainContext
+
+        let start = cal.date(byAdding: .day, value: -70, to: now) ?? now
+        let goal = Goal(topic: "Swift", duration: .year, startDate: start,
+                        streakStartKey: AppCalendar.key(for: start))
+        context.insert(goal)
+
+        for daysAgo in 1...69 {
+            guard let date = cal.date(byAdding: .day, value: -daysAgo, to: now) else { continue }
+            let status: DayStatus = daysAgo % 11 == 0 ? .freezed : .learned
+            let entry = DayEntry(dayKey: AppCalendar.key(for: date), status: status)
+            context.insert(entry)
+            entry.goal = goal
+        }
+
+        return CalendarViewModel(context: context, now: now)
+    }
 }
