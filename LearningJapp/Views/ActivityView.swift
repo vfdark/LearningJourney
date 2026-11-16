@@ -204,13 +204,26 @@ struct ActivityView: View {
         .glassEffect(.regular, in: .rect(cornerRadius: 28))
     }
 
-    // MARK: - Big Log button
+    // MARK: - Big Log button (tap to log, tap again to undo)
 
     @ViewBuilder
     private func logButton(size: CGFloat) -> some View {
-        if viewModel.canLog {
+        if viewModel.isLearnedToday {
+            // Gray: already logged. Tapping it undoes the log.
             Button {
-                viewModel.logLearned()
+                viewModel.toggleLearned()
+            } label: {
+                Text("Logged as Learned")
+                    .font(.system(size: 20, weight: .bold))
+                    .frame(width: size, height: size)
+            }
+            .buttonStyle(.glass)
+            .buttonBorderShape(.circle)
+            .foregroundStyle(Color.primary.opacity(0.4))
+        } else {
+            // Orange: log today as learned
+            Button {
+                viewModel.toggleLearned()
             } label: {
                 Text("Log as Learned")
                     .font(.system(size: 20, weight: .bold))
@@ -220,26 +233,29 @@ struct ActivityView: View {
             .buttonBorderShape(.circle)
             .tint(Color.stepOrange)
             .foregroundStyle(.white)
-        } else {
-            Button {} label: {
-                Text("Logged as Learned")
-                    .font(.system(size: 20, weight: .bold))
-                    .frame(width: size, height: size)
-            }
-            .buttonStyle(.glass)
-            .buttonBorderShape(.circle)
-            .foregroundStyle(Color.primary.opacity(0.3))
-            .disabled(true)
         }
     }
 
-    // MARK: - Freeze button
+    // MARK: - Freeze button (tap to freeze, tap again to undo)
 
     @ViewBuilder
     private func freezeButton(width: CGFloat) -> some View {
-        if viewModel.canFreeze {
+        if viewModel.isFreezedToday {
+            // Gray: today is freezed. Tapping it undoes the freeze.
             Button {
-                viewModel.freeze()
+                viewModel.toggleFreeze()
+            } label: {
+                Text("Freezed for a day")
+                    .font(.system(size: 18, weight: .medium))
+                    .frame(width: width, height: 30)
+            }
+            .buttonStyle(.glass)
+            .buttonBorderShape(.capsule)
+            .foregroundStyle(Color.primary.opacity(0.4))
+        } else if viewModel.canFreeze {
+            // Blue: freeze today
+            Button {
+                viewModel.toggleFreeze()
             } label: {
                 Text("Freeze for a day")
                     .font(.system(size: 18, weight: .medium))
@@ -250,7 +266,7 @@ struct ActivityView: View {
             .tint(Color.stepBlue)
             .foregroundStyle(.white)
         } else {
-            // Disabled: all freezes used, or today is already logged
+            // Gray and disabled: all freezes are used
             Button {} label: {
                 Text("Freezed for a day")
                     .font(.system(size: 18, weight: .medium))
