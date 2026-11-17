@@ -1,7 +1,7 @@
 <div align="center">
 
   <!-- App Icon -->
-  <img src="Assets/App Icon for read me" alt="Learning App Icon" width="120" height="120" />
+  <img src="LearningJapp/Assets.xcassets/Dark.imageset/Dark.png" alt="Learning App Icon" width="120" height="120" />
 
   <h1> Learning Journey </h1>
 
@@ -12,11 +12,12 @@
 
   <!-- Clean, Minimalist Text Pills instead of old badges -->
   <p>
-    <code>iOS 17+</code> • 
-    <code>Swift 5.10</code> • 
-    <code>SwiftUI</code> • 
-    <code>SwiftData</code>
+    <code><img src="https://api.iconify.design/lucide/flame.svg?color=%23F58220" width="16" height="16" align="absmiddle" /></code> •
+   <code><img src="https://api.iconify.design/lucide/snowflake.svg?color=%230A8494" width="16" height="16" align="absmiddle" /></code> •
+    <code><img src="https://api.iconify.design/lucide/calendar.svg?color=%230A8494" width="16" height="16" align="absmiddle" /></code>
   </p>
+
+  
 
   <br />
 
