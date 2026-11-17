@@ -1,7 +1,6 @@
 import Foundation
 import SwiftData
 
-
 // STEP 3: what the app saves on the phone.
 // LearningDuration (Week / Month / Year) already lives in your Onboarding file.
 
@@ -45,6 +44,7 @@ final class Goal {
 final class DayEntry {
     var dayKey: String              // "2026-11-10"
     var statusRaw: String           // "learned" or "freezed"
+    var loggedAt: Date?             // when it was logged (restores the 32 hour clock on undo)
     var goal: Goal?                 // which goal this day belongs to
 
     init(dayKey: String, status: DayStatus) {

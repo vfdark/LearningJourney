@@ -122,7 +122,7 @@ final class ActivityViewModel {
     }
 
     var resultIcon: String {
-        outcome == .completed ? "hands.clap.fill" : "xmark.seal"
+        outcome == .completed ? "hands.sparkles.fill" : "xmark.seal"
     }
 
     var resultTitle: String {
@@ -139,12 +139,14 @@ final class ActivityViewModel {
 
     var todayStatus: DayStatus? { status(on: now) }
 
-    /// Disabled once today is logged as learned. Enabled again at 12 AM,
-    /// because a new day has a new key and nothing is saved under it yet.
-    var canLog: Bool { outcome == .inProgress && todayStatus != .learned }
+    var isLearnedToday: Bool { todayStatus == .learned }
+    var isFreezedToday: Bool { todayStatus == .freezed }
 
-    /// Disabled if all freezes are used OR today is already logged.
-    var canFreeze: Bool { outcome == .inProgress && todayStatus == nil && freezesUsed < freezeLimit }
+    /// A NEW freeze can be used: today is not freezed yet and a freeze is left (2 / 8 / 96).
+    /// (If today is already freezed, the button is tappable too: it undoes the freeze.)
+    var canFreeze: Bool {
+        outcome == .inProgress && !isFreezedToday && freezesUsed < freezeLimit
+    }
 
     // MARK: - Time
 
@@ -166,16 +168,30 @@ final class ActivityViewModel {
 
     // MARK: - Actions
 
-    func logLearned() {
+    /// Big button: tap to log today as learned, tap again to undo it.
+    /// If today was freezed, it turns into learned (the freeze is given back).
+    func toggleLearned() {
         refresh()
-        guard canLog else { return }
-        setToday(.learned)   // also replaces a freeze made earlier today
+        guard outcome == .inProgress else { return }
+
+        if isLearnedToday {
+            removeToday()
+        } else {
+            setToday(.learned)
+        }
     }
 
-    func freeze() {
+    /// Freeze button: tap to freeze today, tap again to undo it (the freeze is given back).
+    /// If today was learned, it turns into a freeze (uses one freeze).
+    func toggleFreeze() {
         refresh()
-        guard canFreeze else { return }
-        setToday(.freezed)   // a freeze keeps the streak alive
+        guard outcome == .inProgress else { return }
+
+        if isFreezedToday {
+            removeToday()
+        } else if canFreeze {
+            setToday(.freezed)   // a freeze keeps the streak alive
+        }
     }
 
     /// TASK 3: "Set a goal". Saves a brand new goal. The old goal stays in the database,
@@ -218,13 +234,28 @@ final class ActivityViewModel {
 
         if let existing = goal.days.first(where: { $0.dayKey == key }) {
             existing.statusRaw = status.rawValue
+            existing.loggedAt = now
         } else {
             let entry = DayEntry(dayKey: key, status: status)
+            entry.loggedAt = now
             context.insert(entry)
             entry.goal = goal
         }
 
         goal.lastActivity = now
+        save()
+    }
+
+    /// Undo: removes today's entry (learned or freezed). The 32 hour clock goes back to
+    /// the time of the last day that is still logged.
+    private func removeToday() {
+        let key = AppCalendar.key(for: now)
+        guard let entry = goal.days.first(where: { $0.dayKey == key }) else { return }
+
+        let remaining = goal.days.filter { $0.dayKey != key }
+        goal.lastActivity = remaining.compactMap(\.loggedAt).max()
+
+        context.delete(entry)
         save()
     }
 
