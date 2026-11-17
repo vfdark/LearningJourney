@@ -29,7 +29,7 @@ struct ActivityView: View {
 
     var body: some View {
         GeometryReader { geo in
-            let circleSize = min(geo.size.width * 0.7, 300)
+            let circleSize = min(geo.size.width * 0.692, 300)   // 272 pt on a 393 pt screen
 
             ZStack {
                 Color.stepBackground
@@ -37,8 +37,16 @@ struct ActivityView: View {
 
                 VStack(alignment: .leading, spacing: 0) {
                     header
-                    weekStrip.padding(.top, 14)
-                    statCards.padding(.top, 14)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 6)
+
+                    weekStrip
+                        .padding(.horizontal, 8)
+                        .padding(.top, 18)
+
+                    statCards
+                        .padding(.horizontal, 16)
+                        .padding(.top, 14)
 
                     if viewModel.outcome == .inProgress {
                         // Task 2: keep logging
@@ -51,19 +59,20 @@ struct ActivityView: View {
                             freezeButton(width: circleSize)
 
                             Text(viewModel.freezeCaption)
-                                .font(.system(size: 13))
+                                .font(.system(size: 14))
                                 .foregroundStyle(.secondary)
                         }
                         .frame(maxWidth: .infinity)
-                        .padding(.bottom, 16)
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 40)
                     } else {
                         // Task 3: goal completed or not met
                         Spacer()
                         resultSection
+                            .padding(.horizontal, 16)
                         Spacer()
                     }
                 }
-                .padding(.horizontal, 20)
             }
         }
         .sensoryFeedback(.success, trigger: viewModel.todayStatus)
@@ -105,12 +114,12 @@ struct ActivityView: View {
 
     private var header: some View {
         HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text("Activity")
                     .font(.system(size: 34, weight: .bold))
 
                 Text(viewModel.dateText)
-                    .font(.system(size: 15))
+                    .font(.system(size: 17))
                     .foregroundStyle(.secondary)
             }
 
@@ -130,7 +139,7 @@ struct ActivityView: View {
         Button(action: action) {
             Image(systemName: icon)
                 .font(.system(size: 18))
-                .frame(width: 26, height: 26)
+                .frame(width: 34, height: 34)
         }
         .buttonStyle(.glass)
         .buttonBorderShape(.circle)
@@ -141,7 +150,7 @@ struct ActivityView: View {
     private var weekStrip: some View {
         HStack(spacing: 0) {
             ForEach(viewModel.weekDays) { day in
-                VStack(spacing: 8) {
+                VStack(spacing: 5) {
                     Text(day.letter)
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(.secondary)
@@ -187,21 +196,37 @@ struct ActivityView: View {
     }
 
     private func statCard(icon: String, tint: Color, value: String, label: String) -> some View {
-        VStack(spacing: 6) {
+        let shape = RoundedRectangle(cornerRadius: 36, style: .continuous)
+
+        return VStack(spacing: 0) {
             Image(systemName: icon)
-                .font(.system(size: 20))
+                .font(.system(size: 22))
                 .foregroundStyle(tint)
 
             Text(value)
-                .font(.system(size: 20, weight: .bold))
+                .font(.system(size: 17, weight: .bold))
+                .padding(.top, 8)
 
             Text(label)
-                .font(.system(size: 12))
-                .foregroundStyle(.secondary)
+                .font(.system(size: 13))
+                .foregroundStyle(Color.primary.opacity(0.85))
+                .padding(.top, 2)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 18)
-        .glassEffect(.regular, in: .rect(cornerRadius: 28))
+        .frame(height: 100)
+        // Almost transparent fill (white at 5%) ...
+        .background(shape.fill(Color.white.opacity(0.05)))
+        // ... and a thin light edge that fades out, like the design
+        .overlay(
+            shape.strokeBorder(
+                LinearGradient(
+                    colors: [Color.white.opacity(0.2), Color.white.opacity(0.05)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ),
+                lineWidth: 1
+            )
+        )
     }
 
     // MARK: - Big Log button (tap to log, tap again to undo)
@@ -214,7 +239,7 @@ struct ActivityView: View {
                 viewModel.toggleLearned()
             } label: {
                 Text("Logged as Learned")
-                    .font(.system(size: 20, weight: .bold))
+                    .font(.system(size: 18, weight: .bold))
                     .frame(width: size, height: size)
             }
             .buttonStyle(.glass)
@@ -226,7 +251,7 @@ struct ActivityView: View {
                 viewModel.toggleLearned()
             } label: {
                 Text("Log as Learned")
-                    .font(.system(size: 20, weight: .bold))
+                    .font(.system(size: 18, weight: .bold))
                     .frame(width: size, height: size)
             }
             .buttonStyle(.glassProminent)
@@ -238,8 +263,14 @@ struct ActivityView: View {
 
     // MARK: - Freeze button (tap to freeze, tap again to undo)
 
-    @ViewBuilder
+    /// Exactly the design size: 272 pt wide, 46 pt tall
     private func freezeButton(width: CGFloat) -> some View {
+        freezeButtonContent()
+            .frame(width: width)
+    }
+
+    @ViewBuilder
+    private func freezeButtonContent() -> some View {
         if viewModel.isFreezedToday {
             // Gray: today is freezed. Tapping it undoes the freeze.
             Button {
@@ -247,7 +278,7 @@ struct ActivityView: View {
             } label: {
                 Text("Freezed for a day")
                     .font(.system(size: 18, weight: .medium))
-                    .frame(width: width, height: 30)
+                    .frame(maxWidth: .infinity, minHeight: 36)
             }
             .buttonStyle(.glass)
             .buttonBorderShape(.capsule)
@@ -259,7 +290,7 @@ struct ActivityView: View {
             } label: {
                 Text("Freeze for a day")
                     .font(.system(size: 18, weight: .medium))
-                    .frame(width: width, height: 30)
+                    .frame(maxWidth: .infinity, minHeight: 36)
             }
             .buttonStyle(.glassProminent)
             .buttonBorderShape(.capsule)
@@ -270,7 +301,7 @@ struct ActivityView: View {
             Button {} label: {
                 Text("Freezed for a day")
                     .font(.system(size: 18, weight: .medium))
-                    .frame(width: width, height: 30)
+                    .frame(maxWidth: .infinity, minHeight: 36)
             }
             .buttonStyle(.glass)
             .buttonBorderShape(.capsule)
@@ -319,7 +350,7 @@ struct ActivityView: View {
 
 private extension Color {
     static let stepOrange = Color(red: 255 / 255, green: 146 / 255, blue: 48 / 255) // #FF9230
-    static let stepBlue = Color(red: 0.38, green: 0.78, blue: 0.94)
+    static let stepBlue = Color(red: 109 / 255, green: 208 / 255, blue: 249 / 255) // #6DD0F9 ("7 Cyan")
 
     static let stepBackground = Color(uiColor: UIColor { traits in
         traits.userInterfaceStyle == .dark

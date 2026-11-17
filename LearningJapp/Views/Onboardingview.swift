@@ -98,8 +98,13 @@ struct OnboardingView: View {
                 // Start button
                 VStack(spacing: 12) {
                     Button {
-                        isTopicFocused = false
-                        onStart(viewModel.cleanedTopic, viewModel.duration)
+                        if viewModel.canStart {
+                            isTopicFocused = false
+                            onStart(viewModel.cleanedTopic, viewModel.duration)
+                        } else {
+                            // No topic yet: put the cursor in the field instead of starting
+                            isTopicFocused = true
+                        }
                     } label: {
                         Text("Start Learning")
                             .font(.system(size: 20, weight: .medium))
@@ -111,7 +116,6 @@ struct OnboardingView: View {
                     .controlSize(.large)
                     .tint(Color.appOrange)
                     .foregroundStyle(.white)
-                    .disabled(!viewModel.canStart)
 
                     Text("You can edit your desire later")
                         .font(.system(size: 14))
@@ -123,13 +127,6 @@ struct OnboardingView: View {
             .padding(.horizontal, 24)
         }
         .sensoryFeedback(.selection, trigger: viewModel.duration)
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("Done") { isTopicFocused = false }
-                    .tint(Color.appOrange)
-            }
-        }
     }
 }
 
