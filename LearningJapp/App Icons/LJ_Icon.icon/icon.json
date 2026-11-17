@@ -1,0 +1,239 @@
+{
+  "features" : [
+    "refractivity",
+    "specular-location"
+  ],
+  "fill" : {
+    "solid" : "display-p3:1.00000,1.00000,1.00000,1.00000"
+  },
+  "groups" : [
+    {
+      "blur-material" : 0.35,
+      "hidden" : true,
+      "layers" : [
+        {
+          "fill" : {
+            "linear-gradient" : [
+              "display-p3:1.00202,0.62987,0.30973,1.00000",
+              "extended-srgb:1.00000,0.55294,0.15686,0.07000"
+            ],
+            "orientation" : {
+              "start" : {
+                "x" : 0.5,
+                "y" : -0.1003228417531932
+              },
+              "stop" : {
+                "x" : 0.7523795480019826,
+                "y" : 0.9266411533569023
+              }
+            }
+          },
+          "image-name" : "Image.svg",
+          "name" : "Image",
+          "position" : {
+            "scale" : 1.63,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "refractivity" : {
+        "depth" : 0.22,
+        "enabled" : true,
+        "strength" : 1
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.51
+      },
+      "specular" : "inside",
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.36
+      }
+    },
+    {
+      "blur-material" : 0.5,
+      "hidden" : true,
+      "layers" : [
+        {
+          "fill" : {
+            "solid" : "extended-srgb:0.00000,0.76471,0.81569,1.00000"
+          },
+          "image-name" : "Primary 3.svg",
+          "name" : "Primary 3",
+          "position" : {
+            "scale" : 1.43,
+            "translation-in-points" : [
+              0,
+              136
+            ]
+          }
+        }
+      ],
+      "opacity" : 1,
+      "refractivity" : {
+        "depth" : 0,
+        "enabled" : true,
+        "strength" : 0.5
+      },
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 1.82
+      },
+      "translucency" : {
+        "enabled" : false,
+        "value" : 0.77
+      }
+    },
+    {
+      "blur-material" : 0.46,
+      "hidden" : true,
+      "layers" : [
+        {
+          "fill" : {
+            "linear-gradient" : [
+              "display-p3:0.38691,0.80441,0.85809,0.00000",
+              "extended-srgb:0.00000,0.76471,0.81569,1.00000"
+            ],
+            "orientation" : {
+              "start" : {
+                "x" : 0.7259017786406996,
+                "y" : 0.33586851855165595
+              },
+              "stop" : {
+                "x" : 0.8047843061340804,
+                "y" : 1
+              }
+            }
+          },
+          "image-name" : "Image.svg",
+          "name" : "Image",
+          "position" : {
+            "scale" : 1.63,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "refractivity" : {
+        "depth" : 1,
+        "enabled" : true,
+        "strength" : 1
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.24
+      },
+      "specular" : "inside",
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.33
+      }
+    },
+    {
+      "blur-material" : 0.46,
+      "hidden" : false,
+      "layers" : [
+        {
+          "fill" : {
+            "linear-gradient" : [
+              "display-p3:1.00202,0.62987,0.30973,1.00000",
+              "extended-srgb:1.00000,0.55294,0.15686,0.00000"
+            ],
+            "orientation" : {
+              "start" : {
+                "x" : 0.5,
+                "y" : 0
+              },
+              "stop" : {
+                "x" : 0.5,
+                "y" : 0.6580419244403459
+              }
+            }
+          },
+          "image-name" : "Image.svg",
+          "name" : "Image",
+          "position" : {
+            "scale" : 1.63,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "refractivity" : {
+        "depth" : 1,
+        "enabled" : true,
+        "strength" : 1
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.83
+      },
+      "specular" : "inside",
+      "translucency" : {
+        "enabled" : true,
+        "value" : 1
+      }
+    },
+    {
+      "blur-material" : 0.46,
+      "hidden" : false,
+      "layers" : [
+        {
+          "fill" : {
+            "linear-gradient" : [
+              "display-p3:0.38691,0.80441,0.85809,0.00000",
+              "extended-srgb:0.00000,0.76471,0.81569,0.90000"
+            ],
+            "orientation" : {
+              "start" : {
+                "x" : 0.5,
+                "y" : 0.4235336943839976
+              },
+              "stop" : {
+                "x" : 0.5,
+                "y" : 0.7959030126693671
+              }
+            }
+          },
+          "image-name" : "Image.svg",
+          "name" : "Image",
+          "position" : {
+            "scale" : 1.63,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "refractivity" : {
+        "depth" : 1,
+        "enabled" : true,
+        "strength" : 1
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.24
+      },
+      "specular" : "inside",
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.33
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

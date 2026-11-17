@@ -9,11 +9,25 @@
 /* Begin PBXFileReference section */
 		000000000000000000000120 /* LearningJapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LearningJapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E68224D830A5923E0083D2D0 /* LearningJapp.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LearningJapp.xcodeproj; path = LearningJapp/LearningJapp.xcodeproj; sourceTree = SOURCE_ROOT; };
+		E6A1888C30AC3B7800921F84 /* LearningJapp.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = LearningJapp.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E6A188C730AC4D7800921F84 /* Exceptions for "LearningJapp" folder in "LearningJapp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 000000000000000100000000 /* LearningJapp */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		000000000000000000000010 /* LearningJapp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E6A188C730AC4D7800921F84 /* Exceptions for "LearningJapp" folder in "LearningJapp" target */,
+			);
 			path = LearningJapp;
 			sourceTree = "<group>";
 		};
@@ -33,6 +47,7 @@
 			children = (
 				000000000000000000000010 /* LearningJapp */,
 				000000000000000000000020 /* Products */,
+				E6A1887B30AC3B7800921F84 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -45,6 +60,21 @@
 			sourceTree = "<group>";
 		};
 		E68224D930A5923E0083D2D0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E6A1887B30AC3B7800921F84 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				E68224D830A5923E0083D2D0 /* LearningJapp.xcodeproj */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		E6A1889030AC3B7800921F84 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -100,6 +130,10 @@
 			productRefGroup = 000000000000000000000020 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
+				{
+					ProductGroup = E6A1889030AC3B7800921F84 /* Products */;
+					ProjectRef = E6A1888C30AC3B7800921F84 /* LearningJapp.xcodeproj */;
+				},
 				{
 					ProductGroup = E68224D930A5923E0083D2D0 /* Products */;
 					ProjectRef = E68224D830A5923E0083D2D0 /* LearningJapp.xcodeproj */;
@@ -165,6 +199,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DONT_GENERATE_INFOPLIST_FILE = YES;
 				DRIVERKIT_DEPLOYMENT_TARGET = 27.0;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -235,6 +270,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DONT_GENERATE_INFOPLIST_FILE = YES;
 				DRIVERKIT_DEPLOYMENT_TARGET = 27.0;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -264,6 +300,8 @@
 		000000000000000111000000 /* Debug configuration for PBXNativeTarget "LearningJapp" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = LJ_Icon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VP86L26GR3;
@@ -271,6 +309,9 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LearningJapp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Learning Journey";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -302,6 +343,8 @@
 		000000000000000112000000 /* Release configuration for PBXNativeTarget "LearningJapp" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = LJ_Icon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VP86L26GR3;
@@ -309,6 +352,9 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LearningJapp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Learning Journey";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
