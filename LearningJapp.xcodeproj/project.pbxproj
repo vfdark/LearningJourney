@@ -19,6 +19,11 @@
 			path = LearningJapp;
 			sourceTree = "<group>";
 		};
+		E6A1890930AD923E00921F84 /* images */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = images;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +38,7 @@
 		000000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
+				E6A1890930AD923E00921F84 /* images */,
 				000000000000000000000010 /* LearningJapp */,
 				000000000000000000000020 /* Products */,
 				E6A1887B30AC3B7800921F84 /* Recovered References */,
@@ -92,6 +98,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				000000000000000000000010 /* LearningJapp */,
+				E6A1890930AD923E00921F84 /* images */,
 			);
 			name = LearningJapp;
 			productName = MyApp;
