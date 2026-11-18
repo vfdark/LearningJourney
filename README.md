@@ -70,9 +70,7 @@
 ## App Preview
 
 <div align="center">
-  <img src="LearningJapp/Assets.xcassets/Act%20Screen.imageset/Screenshot%201448-06-08%20at%209.16.34%20AM.png" alt="Learning App Activity Screen" width="300" />
-  <img src="LearningJapp/Assets.xcassets/Onboarding%20Sc.imageset/Screenshot%201448-06-08%20at%209.16.17%20AM.png" alt="Learning App Onboarding Screen" width="300" />
-  <img src="LearningJapp/Assets.xcassets/Calnder%20screen.imageset/Screenshot%201448-06-08%20at%209.16.52%20AM.png" alt="Learning App Calendar Screen" width="300" />
+  <img src="https://raw.githubusercontent.com/vfdark/LearningJourney/Rahaf/images/Onboarding.gif" width="1000" alt="Learning App Activity Screen">
 </div>
 
 <br />
