@@ -12,22 +12,9 @@
 		E6A1888C30AC3B7800921F84 /* LearningJapp.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = LearningJapp.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		E6A188C730AC4D7800921F84 /* Exceptions for "LearningJapp" folder in "LearningJapp" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 000000000000000100000000 /* LearningJapp */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		000000000000000000000010 /* LearningJapp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				E6A188C730AC4D7800921F84 /* Exceptions for "LearningJapp" folder in "LearningJapp" target */,
-			);
 			path = LearningJapp;
 			sourceTree = "<group>";
 		};
