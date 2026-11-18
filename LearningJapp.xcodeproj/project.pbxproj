@@ -12,6 +12,7 @@
 		E6A1888C30AC3B7800921F84 /* LearningJapp.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = LearningJapp.xcodeproj; sourceTree = "<group>"; };
 		E6A188DE30AD7E3200921F84 /* LearningJapp.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = LearningJapp.xcodeproj; sourceTree = "<group>"; };
 		E6A1898730ADA36F00921F84 /* LearningJapp.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = LearningJapp.xcodeproj; sourceTree = "<group>"; };
+		E6B5B74C30ADF12900CFB98D /* LearningJapp.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = LearningJapp.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -67,6 +68,7 @@
 				E68224D830A5923E0083D2D0 /* LearningJapp.xcodeproj */,
 				E6A1888C30AC3B7800921F84 /* LearningJapp.xcodeproj */,
 				E6A188DE30AD7E3200921F84 /* LearningJapp.xcodeproj */,
+				E6A1898730ADA36F00921F84 /* LearningJapp.xcodeproj */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -86,6 +88,13 @@
 			sourceTree = "<group>";
 		};
 		E6A1898A30ADA36F00921F84 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E6B5B75130ADF12900CFB98D /* Products */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -153,6 +162,10 @@
 				{
 					ProductGroup = E6A1898A30ADA36F00921F84 /* Products */;
 					ProjectRef = E6A1898730ADA36F00921F84 /* LearningJapp.xcodeproj */;
+				},
+				{
+					ProductGroup = E6B5B75130ADF12900CFB98D /* Products */;
+					ProjectRef = E6B5B74C30ADF12900CFB98D /* LearningJapp.xcodeproj */;
 				},
 				{
 					ProductGroup = E68224D930A5923E0083D2D0 /* Products */;
