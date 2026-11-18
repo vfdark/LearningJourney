@@ -10,6 +10,7 @@
 		000000000000000000000120 /* LearningJapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LearningJapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E68224D830A5923E0083D2D0 /* LearningJapp.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LearningJapp.xcodeproj; path = LearningJapp/LearningJapp.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E6A1888C30AC3B7800921F84 /* LearningJapp.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = LearningJapp.xcodeproj; sourceTree = "<group>"; };
+		E6A188DE30AD7E3200921F84 /* LearningJapp.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = LearningJapp.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -57,11 +58,19 @@
 			isa = PBXGroup;
 			children = (
 				E68224D830A5923E0083D2D0 /* LearningJapp.xcodeproj */,
+				E6A1888C30AC3B7800921F84 /* LearningJapp.xcodeproj */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		E6A1889030AC3B7800921F84 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E6A188E230AD7E3200921F84 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -117,6 +126,10 @@
 			productRefGroup = 000000000000000000000020 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
+				{
+					ProductGroup = E6A188E230AD7E3200921F84 /* Products */;
+					ProjectRef = E6A188DE30AD7E3200921F84 /* LearningJapp.xcodeproj */;
+				},
 				{
 					ProductGroup = E6A1889030AC3B7800921F84 /* Products */;
 					ProjectRef = E6A1888C30AC3B7800921F84 /* LearningJapp.xcodeproj */;
