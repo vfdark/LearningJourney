@@ -70,7 +70,7 @@
 ## App Preview
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/vfdark/LearningJourney/Rahaf/images/Onboarding.gif" width="300" alt="Learning App Activity Screen">
+  <img src="https://raw.githubusercontent.com/vfdark/LearningJourney/Rahaf/images/Onboarding.gif" width="1000" alt="Learning App Activity Screen">
 </div>
 
 <br />
